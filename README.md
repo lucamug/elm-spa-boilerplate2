@@ -49,7 +49,7 @@ Github doesn’t support SPA yet. If you want to check your app in production yo
 
 If you don’t have Surge yet
 ```
-$ npm install -g surge   # To install surge if you don't have it
+$ npm install -g surge
 ```
 then:
 

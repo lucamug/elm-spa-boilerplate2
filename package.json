@@ -1,0 +1,26 @@
+{
+    "name": "elm-spa-boilerplate2",
+    "version": "1.0.0",
+    "description": "Elm SPa Bolierplate",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "create-elm-app": "^1.10.2"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lucamug/elm-spa-boilerplate2.git"
+    },
+    "author": "lucamug",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lucamug/elm-spa-boilerplate2/issues"
+    },
+    "homepage": "https://github.com/lucamug/elm-spa-boilerplate2#readme"
+}
