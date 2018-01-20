@@ -1,7 +1,7 @@
 {
     "name": "elm-spa-boilerplate2",
-    "version": "1.0.2",
-    "description": "Elm SPa Bolierplate",
+    "version": "1.0.3",
+    "description": "Elm Spa Boilerplate",
     "main": "index.js",
     "directories": {
         "test": "tests"
@@ -18,7 +18,7 @@
         "url": "git+https://github.com/lucamug/elm-spa-boilerplate2.git"
     },
     "author": "lucamug",
-    "license": "ISC",
+    "license": "BSD3",
     "bugs": {
         "url": "https://github.com/lucamug/elm-spa-boilerplate2/issues"
     },

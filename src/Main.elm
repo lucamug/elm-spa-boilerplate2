@@ -155,6 +155,13 @@ locationToRoute location =
 -- PORTS
 
 
+type alias Flag =
+    { localStorage : String
+    , packVersion : String
+    , packElmVersion : String
+    }
+
+
 port urlChange : String -> Cmd msg
 
 
@@ -184,7 +191,8 @@ type alias Model =
     , location : Navigation.Location
     , title : String
     , localStorage : String
-    , version : String
+    , packVersion : String
+    , packElmVersion : String
     }
 
 
@@ -248,15 +256,16 @@ update msg model =
 -- INIT
 
 
-initModel : String -> Navigation.Location -> Model
-initModel val location =
+initModel : Flag -> Navigation.Location -> Model
+initModel flag location =
     { route = locationToRoute location
     , history = [ location.pathname ]
     , apiData = NoData
     , location = location
     , title = "Elm Spa Boilerplate"
-    , localStorage = val
-    , version = "1.0.2"
+    , localStorage = flag.localStorage
+    , packVersion = flag.packVersion
+    , packElmVersion = flag.packElmVersion
     }
 
 
@@ -265,11 +274,11 @@ initCmd model location =
     Cmd.none
 
 
-init : String -> Navigation.Location -> ( Model, Cmd Msg )
-init val location =
+init : Flag -> Navigation.Location -> ( Model, Cmd Msg )
+init flag location =
     let
         model =
-            initModel val location
+            initModel flag location
 
         cmd =
             initCmd model location
@@ -332,7 +341,13 @@ view model =
         , div [ class "footer" ]
             [ div [ class "footerContainer" ]
                 [ madeByLucamug
-                , div [ class "version" ] [ text <| "version " ++ model.version ]
+                , div [ class "version" ]
+                    [ text <|
+                        "ver. "
+                            ++ model.packVersion
+                            ++ " elm-ver. "
+                            ++ model.packElmVersion
+                    ]
                 ]
             ]
         , forkMe
@@ -488,7 +503,7 @@ secondElement list =
 -- MAIN
 
 
-main : Program String Model Msg
+main : Program Flag Model Msg
 main =
     Navigation.programWithFlags UrlChange
         { init = init

@@ -4,9 +4,16 @@ import {
 } from './Main.elm';
 import registerServiceWorker from './registerServiceWorker';
 
+const pack = require('../package.json');
+const packElm = require('../elm-package.json');
+
 registerServiceWorker();
 
-const elmSpa = Main.fullscreen(localStorage.getItem("spa") || "");
+const elmSpa = Main.fullscreen({
+    localStorage: (localStorage.getItem("spa") || ""),
+    packVersion: pack.version,
+    packElmVersion: packElm.version,
+});
 
 elmSpa.ports.urlChange.subscribe(function(title) {
     document.body.classList.add("urlChange");
@@ -27,4 +34,4 @@ window.addEventListener("storage", function(event) {
     if (event.storageArea === localStorage && event.key === "spa") {
         elmSpa.ports.onLocalStorageChange.send(event.newValue);
     }
-}, false);
+}, false);;
