@@ -326,7 +326,12 @@ view model =
             , br [] []
             , text model.title
             ]
-        , img [ src "/img/skyline.jpg", style [ ( "width", "100%" ) ] ] []
+        , img
+            [ src "/img/skyline.jpg"
+            , alt "Skyline"
+            , style [ ( "width", "100%" ) ]
+            ]
+            []
         , div [ class "menu" ]
             [ ul []
                 (List.map
@@ -411,12 +416,15 @@ viewTop model =
                     ]
         , h3 [] [ text "Local Storage" ]
         , p [] [ text "Example of local storage implementation using flags and ports. The value in the input field below is automatically read and written into localStorage.spa." ]
-        , input
-            [ style [ ( "font-size", "18px" ), ( "padding", "10px 14px" ) ]
-            , value model.localStorage
-            , onInput UpdateLocalStorage
+        , label []
+            [ text "localStorage"
+            , input
+                [ style [ ( "font-size", "18px" ), ( "padding", "10px 14px" ) ]
+                , value model.localStorage
+                , onInput UpdateLocalStorage
+                ]
+                []
             ]
-            []
         ]
 
 
