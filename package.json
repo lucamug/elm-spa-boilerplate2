@@ -1,6 +1,6 @@
 {
     "name": "elm-spa-boilerplate2",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Elm Spa Boilerplate",
     "main": "index.js",
     "directories": {
