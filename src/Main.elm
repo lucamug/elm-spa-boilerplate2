@@ -184,6 +184,7 @@ type alias Model =
     , location : Navigation.Location
     , title : String
     , localStorage : String
+    , version : String
     }
 
 
@@ -255,6 +256,7 @@ initModel val location =
     , location = location
     , title = "Elm Spa Boilerplate"
     , localStorage = val
+    , version = "1.0.2"
     }
 
 
@@ -328,7 +330,10 @@ view model =
             , routeView model.route model
             ]
         , div [ class "footer" ]
-            [ div [ class "footerContainer" ] [ madeByLucamug ]
+            [ div [ class "footerContainer" ]
+                [ madeByLucamug
+                , div [ class "version" ] [ text <| "version " ++ model.version ]
+                ]
             ]
         , forkMe
         ]
