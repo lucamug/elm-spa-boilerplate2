@@ -23,7 +23,7 @@ example type_ =
         -- Here I can convert the color to string
         ]
     <|
-        Element.text "????"
+        Element.text " _ "
 
 
 introspection : Introspection.Introspection msg Color.Color

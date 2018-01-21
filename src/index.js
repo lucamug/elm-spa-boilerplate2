@@ -14,7 +14,9 @@ const elmSpa = Main.fullscreen({
     localStorage: (localStorage.getItem("spa") || ""),
     packVersion: pack.version,
     packElmVersion: packElm.version,
-    bannerSrc: bannerSrc
+    bannerSrc: bannerSrc,
+    width: window.innerWidth,
+    height: window.innerHeight
 });
 
 elmSpa.ports.urlChange.subscribe(function(title) {

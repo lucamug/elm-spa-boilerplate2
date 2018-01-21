@@ -2,18 +2,19 @@ port module Main exposing (main)
 
 -- import Element.Border
 -- import Element.Events
--- import Element.Border
 -- import Parts.Button
 --import Element.Events
+--import Element.Border
+--import Task
 
 import Color
 import Element
 import Element.Background
 import Element.Font
 import Element.Hack
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html
+import Html.Attributes
+import Html.Events
 import Http
 import Introspection
 import Json.Decode as Decode
@@ -22,6 +23,7 @@ import Pages.Page1
 import Parts.Color
 import Parts.LogoElm
 import UrlParser exposing ((</>))
+import Window
 
 
 -- ROUTES
@@ -30,11 +32,11 @@ import UrlParser exposing ((</>))
 routes : List Route
 routes =
     [ Top
+    , Styleguide
+    , Sitemap
     , Page1
     , Page2
     , Page2_1
-    , Styleguide
-    , Sitemap
     ]
 
 
@@ -64,6 +66,18 @@ routeData route =
             , view = viewTop
             }
 
+        Styleguide ->
+            { name = "Style Guide"
+            , path = [ "styleguide" ]
+            , view = viewStyleguide
+            }
+
+        Sitemap ->
+            { name = "Sitemap"
+            , path = [ "sitemap" ]
+            , view = viewSitemap
+            }
+
         Page1 ->
             { name = "Page one"
             , path = [ "page1" ]
@@ -80,18 +94,6 @@ routeData route =
             { name = "Page two.one"
             , path = [ "page2", "subpage1" ]
             , view = viewPage2_1
-            }
-
-        Styleguide ->
-            { name = "Style Guide"
-            , path = [ "styleguide" ]
-            , view = viewStyleguide
-            }
-
-        Sitemap ->
-            { name = "Sitemap"
-            , path = [ "sitemap" ]
-            , view = viewSitemap
             }
 
         NotFound ->
@@ -170,6 +172,8 @@ type alias Flag =
     , packVersion : String
     , packElmVersion : String
     , bannerSrc : String
+    , width : Int
+    , height : Int
     }
 
 
@@ -193,6 +197,7 @@ type Msg
     | FetchApiData String
     | SetLocalStorage (Result String String)
     | UpdateLocalStorage String
+    | WindowSize Window.Size
 
 
 type alias Model =
@@ -205,6 +210,7 @@ type alias Model =
     , packVersion : String
     , packElmVersion : String
     , bannerSrc : String
+    , device : Element.Hack.Device
     }
 
 
@@ -263,6 +269,9 @@ update msg model =
         UpdateLocalStorage value ->
             ( { model | localStorage = value }, storeLocalStorage <| Just value )
 
+        WindowSize wsize ->
+            ( { model | device = Element.Hack.classifyDevice <| wsize }, Cmd.none )
+
 
 
 -- INIT
@@ -279,12 +288,17 @@ initModel flag location =
     , packVersion = flag.packVersion
     , packElmVersion = flag.packElmVersion
     , bannerSrc = flag.bannerSrc
+
+    -- Initial windowSize should come with a flag
+    , device = Element.Hack.classifyDevice <| Window.Size flag.width flag.height
     }
 
 
 initCmd : Model -> Navigation.Location -> Cmd Msg
 initCmd model location =
-    Cmd.none
+    Cmd.batch
+        -- [ Task.perform WindowSize Window.size ]
+        []
 
 
 init : Flag -> Navigation.Location -> ( Model, Cmd Msg )
@@ -324,6 +338,7 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Sub.map SetLocalStorage <| onLocalStorageChange (Decode.decodeValue Decode.string)
+        , Window.resizes WindowSize
         ]
 
 
@@ -369,8 +384,16 @@ viewLinkSE model route =
 
 viewMenu : Model -> Element.Element Msg
 viewMenu model =
-    Element.row
-        [ Element.Background.color Parts.Color.lightOrange
+    let
+        element =
+            if model.device.width < 620 then
+                Element.column
+            else
+                Element.row
+    in
+    element
+        [ Element.Hack.style [ ( "flex-wrap", "wrap" ) ]
+        , Element.Background.color Parts.Color.lightOrange
         ]
         (List.map
             (\route -> viewLinkSE model route)
@@ -380,26 +403,33 @@ viewMenu model =
 
 viewTopPart : Model -> Element.Element Msg
 viewTopPart model =
-    Element.column []
-        [ Element.Hack.h1 [] [ text "Elm Spa Boilerplate" ]
-        , Element.image []
-            { src = model.bannerSrc
-            , description = "Banner"
-            }
+    Element.column
+        [ Element.Background.fittedImage model.bannerSrc
+        , Element.Font.color Parts.Color.lightOrange
+        ]
+        [ Element.Hack.h1 [ Html.Attributes.style [ ( "text-shadow", "1px 0 1px black" ) ] ]
+            [ Html.text "Elm Spa Boilerplate" ]
         ]
 
 
 viewMiddelPart : Model -> Element.Element Msg
 viewMiddelPart model =
     Element.column [ Element.padding 30 ]
-        [ Element.Hack.h2 [] [ text <| routeName model.route ]
+        [ Element.Hack.h2 [] [ Html.text <| routeName model.route ]
         , routeView model.route model
         ]
 
 
 viewFooter : Model -> Element.Element msg
 viewFooter model =
-    Element.row
+    let
+        element =
+            if model.device.width < 620 then
+                Element.column
+            else
+                Element.row
+    in
+    element
         [ Element.spaceEvenly
         , Element.Background.color Parts.Color.elmOrange
         , Element.padding 30
@@ -416,7 +446,7 @@ viewFooter model =
         ]
 
 
-view : Model -> Html Msg
+view : Model -> Html.Html Msg
 view model =
     Element.layout
         [ Element.Font.family
@@ -441,7 +471,7 @@ view model =
 onLinkClickSE : String -> Element.Attribute Msg
 onLinkClickSE url =
     Element.attribute
-        (onWithOptions "click"
+        (Html.Events.onWithOptions "click"
             { stopPropagation = False
             , preventDefault = True
             }
@@ -483,11 +513,12 @@ viewTop model =
                 , label = Element.text "https://medium.com/@l.mugnaini/single-page-application-boilerplate-for-elm-160bb5f3eec2"
                 }
             ]
+        , Element.paragraph [] [ Element.text <| toString model ]
         , Element.paragraph []
             [ Element.text "The code is at "
             , Element.link [] { url = "https://github.com/lucamug/elm-spa-boilerplate2", label = Element.text "https://github.com/lucamug/elm-spa-boilerplate2" }
             ]
-        , Element.Hack.h3 [] [ text "Ajax request example" ]
+        , Element.Hack.h3 [] [ Html.text "Ajax request example" ]
 
         {- , case model.apiData of
            NoData ->
@@ -508,15 +539,15 @@ viewTop model =
                    , Element.paragraph [] [ Element.text <| "Your IP is " ++ ip ]
                    ]
         -}
-        , Element.Hack.h3 [] [ text "Local Storage" ]
+        , Element.Hack.h3 [] [ Html.text "Local Storage" ]
         , Element.paragraph [] [ Element.text "Example of local storage implementation using flags and ports. The value in the input field below is automatically read and written into localStorage.spa." ]
         , Element.html
-            (label []
-                [ text "localStorage"
-                , input
-                    [ style [ ( "font-size", "18px" ), ( "padding", "10px 14px" ) ]
-                    , value model.localStorage
-                    , onInput UpdateLocalStorage
+            (Html.label []
+                [ Html.text "localStorage"
+                , Html.input
+                    [ Html.Attributes.style [ ( "font-size", "18px" ), ( "padding", "10px 14px" ) ]
+                    , Html.Attributes.value model.localStorage
+                    , Html.Events.onInput UpdateLocalStorage
                     ]
                     []
                 ]
