@@ -3,7 +3,7 @@ import {
     Main
 } from './Main.elm';
 import registerServiceWorker from './registerServiceWorker';
-import bannerSrc from "./img/skyline.jpg";
+import bannerSrc from "./Images/skyline.webp";
 
 const pack = require('../package.json');
 const packElm = require('../elm-package.json');
