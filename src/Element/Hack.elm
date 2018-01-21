@@ -1,6 +1,7 @@
 module Element.Hack exposing (..)
 
 import Element
+import Element.Font
 import Html
 import Html.Attributes
 import Window
@@ -44,25 +45,42 @@ style style =
     Element.attribute (Html.Attributes.style style)
 
 
+headersCommon : List (Element.Element msg) -> Element.Element msg
+headersCommon elements =
+    Element.paragraph
+        [ Element.Font.center
+        , Element.padding 20
+        ]
+        elements
+
+
 h1 : List (Html.Attribute msg) -> List (Html.Html msg) -> Element.Element msg
 h1 attributes children =
-    Element.html <|
-        Html.h1 attributes children
+    headersCommon
+        [ Element.html <|
+            Html.h1 attributes children
+        ]
 
 
 h2 : List (Html.Attribute msg) -> List (Html.Html msg) -> Element.Element msg
 h2 attributes children =
-    Element.html <|
-        Html.h2 attributes children
+    headersCommon
+        [ Element.html <|
+            Html.h2 attributes children
+        ]
 
 
 h3 : List (Html.Attribute msg) -> List (Html.Html msg) -> Element.Element msg
 h3 attributes children =
-    Element.html <|
-        Html.h3 attributes children
+    headersCommon
+        [ Element.html <|
+            Html.h3 attributes children
+        ]
 
 
 h4 : List (Html.Attribute msg) -> List (Html.Html msg) -> Element.Element msg
 h4 attributes children =
-    Element.html <|
-        Html.h4 attributes children
+    headersCommon
+        [ Element.html <|
+            Html.h4 attributes children
+        ]

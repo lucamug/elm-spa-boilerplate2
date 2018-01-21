@@ -5,7 +5,8 @@ import Element
 
 view : a -> Element.Element msg
 view model =
-    Element.text """Midway upon the journey of our life
+    Element.paragraph []
+        [ Element.text """Midway upon the journey of our life
 I found myself within a forest dark,
 For the straightforward pathway had been lost.
 
@@ -16,3 +17,4 @@ Which in the very thought renews the fear.
 So bitter is it, death is little more;
 But of the good to treat, which there I found,
 Speak will I of the other things I saw there."""
+        ]

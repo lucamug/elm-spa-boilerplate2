@@ -346,13 +346,8 @@ subscriptions model =
 -- VIEWS
 
 
-emptyFix : Element.Attribute msg
-emptyFix =
-    Element.attribute <| Html.Attributes.style []
-
-
-viewLinkSE : Model -> Route -> Element.Element Msg
-viewLinkSE model route =
+viewLinkMenu : Model -> Route -> Element.Element Msg
+viewLinkMenu model route =
     let
         url =
             routePathJoined route
@@ -369,17 +364,15 @@ viewLinkSE model route =
             )
             (Element.text <| routeName route)
     else
-        Element.el []
-            (Element.link
-                ([ Element.Font.color Parts.Color.red
-                 , onLinkClickSE url
-                 ]
-                    ++ common
-                )
-                { url = url
-                , label = Element.text <| routeName route
-                }
+        Element.link
+            ([ Element.Font.color Parts.Color.red
+             , onLinkClickSE url
+             ]
+                ++ common
             )
+            { url = url
+            , label = Element.text <| routeName route
+            }
 
 
 viewMenu : Model -> Element.Element Msg
@@ -396,7 +389,7 @@ viewMenu model =
         , Element.Background.color Parts.Color.lightOrange
         ]
         (List.map
-            (\route -> viewLinkSE model route)
+            (\route -> viewLinkMenu model route)
             routes
         )
 
@@ -576,7 +569,7 @@ viewSitemap model =
                         url =
                             model.location.origin ++ routePathJoined route
                     in
-                    { link1 = viewLinkSE model route
+                    { link1 = viewLinkMenu model route
                     , link2 = Element.link [] { url = url, label = Element.text <| url }
                     }
                 )
@@ -598,7 +591,8 @@ viewSitemap model =
 
 viewPage2 : Model -> Element.Element Msg
 viewPage2 model =
-    Element.text """I cannot well repeat how there I entered,
+    Element.paragraph []
+        [ Element.text """I cannot well repeat how there I entered,
 So full was I of slumber at the moment
 In which I had abandoned the true way.
 
@@ -608,12 +602,13 @@ Which had with consternation pierced my heart,
 
 Upward I looked, and I beheld its shoulders
 Vested already with that planet's rays
-Which leadeth others right by every road."""
+Which leadeth others right by every road.""" ]
 
 
 viewPage2_1 : Model -> Element.Element Msg
 viewPage2_1 model =
-    Element.text """Then was the fear a little quieted
+    Element.paragraph []
+        [ Element.text """Then was the fear a little quieted
 That in my heart's lake had endured throughout
 The night, which I had passed so piteously
 
@@ -623,7 +618,7 @@ Turns to the water perilous and gazes;
 
 So did my soul, that still was fleeing onward,
 Turn itself back to re-behold the pass
-Which never yet a living person left."""
+Which never yet a living person left.""" ]
 
 
 
