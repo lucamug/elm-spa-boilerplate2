@@ -9,11 +9,6 @@ module Parts.Button
         , smallImportant
         )
 
---import Color.Convert
---import Html
---import Html.Attributes
---import Introspection
-
 import Color
 import Element
 import Element.Background
@@ -234,29 +229,3 @@ component attributes label onPress type_ =
         { onPress = onPress
         , label = label
         }
-
-
-
-{- , if spinner then
-     -- This is a pure css spinner
-     Html.div
-         [ Html.Attributes.style
-             [ ( "box-sizing", "border-box" )
-             , ( "position", "absolute" )
-             , ( "top", "50%" )
-             , ( "right", "24px" )
-             , ( "width", "20px" )
-             , ( "height", "20px" )
-             , ( "margin-top", "-10px" )
-             , ( "margin-left", "-10px" )
-             , ( "border-radius", "50%" )
-             , ( "border", "2px solid transparent" )
-
-             --, ( "border-top-color", typeToColor textColor )
-             , ( "animation", "spinner .6s linear infinite" )
-             ]
-         ]
-         [ Html.text "" ]
-   else
-     Html.text ""
--}
