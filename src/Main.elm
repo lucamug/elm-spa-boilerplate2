@@ -1,12 +1,5 @@
 port module Main exposing (main)
 
--- import Element.Border
--- import Element.Events
--- import Parts.Button
---import Element.Border
---import Task
---import Element.Events
-
 import Color
 import Element
 import Element.Background
@@ -509,29 +502,6 @@ onLinkClickSE url =
             }
             (Decode.succeed (ChangeLocation url))
         )
-
-
-
-{-
-   viewLink : Model -> Route -> Html Msg
-   viewLink model route =
-       let
-           url =
-               routePathJoined route
-
-           onLinkClick : String -> Attribute Msg
-           onLinkClick path =
-               onWithOptions "click"
-                   { stopPropagation = False
-                   , preventDefault = True
-                   }
-                   (Decode.succeed (ChangeLocation path))
-       in
-       if model.route == route then
-           div [ class "selected" ] [ text (routeName route) ]
-       else
-           a [ href url, onLinkClick url ] [ text (routeName route) ]
--}
 
 
 viewDebug : Model -> Element.Element msg

@@ -100,10 +100,10 @@ sizeToInt : Size -> Int
 sizeToInt size =
     case size of
         SmallSize ->
-            32
+            16
 
         LargeSize ->
-            64
+            32
 
 
 small : List (Element.Attribute msg) -> Element.Element msg -> Maybe msg -> Element.Element msg
@@ -184,11 +184,27 @@ component attributes label onPress type_ =
 
                 _ ->
                     TextOnImportant
+
+        sizeInt =
+            sizeToInt size
+
+        spinnerElement =
+            Element.paragraph [ Element.padding sizeInt ]
+                [ Element.Hack.styleElement "@keyframes spinner { to { transform: rotate(360deg); } }"
+                , Element.el
+                    [ Element.center
+                    , Element.Hack.style
+                        [ ( "animation", "spinner .6s linear infinite" )
+                        ]
+                    ]
+                  <|
+                    Element.text "↻"
+                ]
     in
     Element.Input.button
-        ([ Element.Background.color <| typeToColor bgColor
+        ([ Element.inFront spinner spinnerElement
+         , Element.Background.color <| typeToColor bgColor
          , Element.Font.color <| typeToColor textColor
-         , Element.height <| Element.px <| sizeToInt size
          , Element.Border.rounded 10
          , Element.Border.width 1
          , Element.Border.color <| typeToColor textColor
@@ -199,36 +215,24 @@ component attributes label onPress type_ =
            else
             Element.Hack.style [ ( "cursor", "pointer" ) ]
          , if spinner then
-            Element.paddingEach { bottom = 0, left = 40, right = 80, top = 0 }
+            Element.paddingEach
+                { top = sizeInt
+                , left = sizeInt * 2 + 10
+                , bottom = sizeInt
+                , right = sizeInt * 2 - 10
+                }
            else
-            Element.paddingXY 60 0
+            Element.paddingEach
+                { top = sizeInt
+                , left = sizeInt * 2
+                , bottom = sizeInt
+                , right = sizeInt * 2
+                }
          ]
             ++ attributes
         )
         { onPress = onPress
-        , label =
-            if spinner then
-                Element.paragraph []
-                    [ Element.el
-                        [ Element.paddingEach
-                            { bottom = 0
-                            , left = 0
-                            , right = 0
-                            , top = 0
-                            }
-                        ]
-                        label
-                    , Element.Hack.styleElement "@keyframes spinner { to { transform: rotate(360deg); } }"
-                    , Element.el
-                        [ Element.Hack.style
-                            [ ( "animation", "spinner .6s linear infinite" )
-                            ]
-                        ]
-                      <|
-                        Element.text "↻"
-                    ]
-            else
-                label
+        , label = label
         }
 
 
