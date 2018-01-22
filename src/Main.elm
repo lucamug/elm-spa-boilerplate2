@@ -3,9 +3,9 @@ port module Main exposing (main)
 -- import Element.Border
 -- import Element.Events
 -- import Parts.Button
---import Element.Events
 --import Element.Border
 --import Task
+--import Element.Events
 
 import Color
 import Element
@@ -426,9 +426,10 @@ viewTopPart : Model -> Element.Element Msg
 viewTopPart model =
     Element.column
         [ Element.Background.fittedImage model.bannerSrc
-        , Element.Font.color Parts.Color.lightOrange
+        , Element.Font.color Parts.Color.white
         ]
-        [ Element.Hack.h1
+        [ Element.el [ Element.padding 10 ] <| Parts.LogoElm.orange 50
+        , Element.Hack.h1
             [ Html.Attributes.style
                 [ ( "text-shadow", "1px 0 1px black" )
                 , ( "text-align", "center" )
@@ -564,26 +565,42 @@ viewTop model =
             , Element.link [] { url = "https://github.com/lucamug/elm-spa-boilerplate2", label = Element.text "https://github.com/lucamug/elm-spa-boilerplate2" }
             ]
         , Element.Hack.h3 [] [ Html.text "Ajax request example" ]
+        , case model.apiData of
+            NoData ->
+                Element.column []
+                    [ Element.paragraph []
+                        [ Parts.Button.largeImportant
+                            []
+                            (Element.text "My IP is...")
+                          <|
+                            Just (FetchApiData "https://httpbin.org/delay/1")
+                        ]
+                    , Element.paragraph [] [ Element.text <| "Your IP is ..." ]
+                    ]
 
-        {- , case model.apiData of
-           NoData ->
-               Element.column []
-                   [ Element.paragraph [] [ Parts.Button.component [ Element.Events.onClick <| FetchApiData "https://httpbin.org/delay/1" ] "My IP is..." Parts.Button.Large_Important ]
-                   , Element.paragraph [] [ Element.text <| "Your IP is ..." ]
-                   ]
+            Fetching ->
+                Element.column []
+                    [ Element.paragraph []
+                        [ Parts.Button.largeImportantWithSpinner
+                            []
+                            (Element.text "My IP is...")
+                            Nothing
+                        ]
+                    , Element.paragraph [] [ Element.text <| "Your IP is ..." ]
+                    ]
 
-           Fetching ->
-               Element.column []
-                   [ Element.paragraph [] [ Parts.Button.component [] "My IP is..." Parts.Button.Large_Important_With_Spinner ]
-                   , Element.paragraph [] [ Element.text <| "Your IP is ..." ]
-                   ]
-
-           Fetched ip ->
-               Element.column []
-                   [ Element.paragraph [] [ Parts.Button.component [ onClick <| FetchApiData "https://httpbin.org/delay/1" ] "My IP is..." Parts.Button.Large_Important ]
-                   , Element.paragraph [] [ Element.text <| "Your IP is " ++ ip ]
-                   ]
-        -}
+            Fetched ip ->
+                Element.column []
+                    [ Element.paragraph []
+                        [ Parts.Button.largeImportant
+                            []
+                            (Element.text "My IP is...")
+                          <|
+                            Just <|
+                                FetchApiData "https://httpbin.org/delay/1"
+                        ]
+                    , Element.paragraph [] [ Element.text <| "Your IP is " ++ ip ]
+                    ]
         , Element.Hack.h3 [] [ Html.text "Local Storage" ]
         , Element.paragraph [] [ Element.text "Example of local storage implementation using flags and ports. The value in the input field below is automatically read and written into localStorage.spa." ]
         , Element.html
@@ -604,11 +621,9 @@ viewStyleguide : Model -> Element.Element Msg
 viewStyleguide model =
     Element.column []
         [ Element.text "This is a Living Style Guide automatically generated from the code."
-
-        --, Introspection.view Parts.Color.introspection
         , Introspection.view Parts.Button.introspection
-
-        --, Introspection.view Parts.LogoElm.introspection
+        , Introspection.view Parts.Color.introspection
+        , Introspection.view Parts.LogoElm.introspection
         ]
 
 

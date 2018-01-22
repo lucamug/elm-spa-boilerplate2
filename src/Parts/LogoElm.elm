@@ -10,11 +10,10 @@ module Parts.LogoElm
         , white
         )
 
--- import Introspection
-
 import Color
 import Color.Convert
 import Element
+import Introspection
 import Svg
 import Svg.Attributes
 
@@ -22,29 +21,16 @@ import Svg.Attributes
 -- INTROSPECTION
 
 
-introspection :
-    { description : String
-    , example : Element.Element msg -> Element.Element msg
-    , name : String
-    , signature : String
-    , types : List ( Element.Element msg1, String )
-    , usage : String
-    , usageResult : Element.Element msg2
-    }
+introspection : Introspection.Introspection2 msg
 introspection =
-    { name = "Logo Elm"
+    { name = "LogoElm"
     , signature = "Size -> Type -> Html.Html msg"
     , description = ""
     , usage = "colorOrange 128"
     , usageResult = orange 128
     , types = types
-    , example = example
+    , example = identity
     }
-
-
-example : a -> a
-example type_ =
-    type_
 
 
 types : List ( Element.Element msg, String )

@@ -21,7 +21,7 @@ import Introspection
 
 introspection : Introspection.Introspection msg Color.Color
 introspection =
-    { name = "Colors"
+    { name = "Color"
     , signature = "Color.Color"
     , description = "List of colors used in the app."
     , usage = "elmOrange"
