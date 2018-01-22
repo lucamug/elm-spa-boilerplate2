@@ -48,8 +48,7 @@ style style =
 headersCommon : List (Element.Element msg) -> Element.Element msg
 headersCommon elements =
     Element.paragraph
-        [ Element.Font.center
-        , Element.padding 20
+        [ Element.padding 20
         ]
         elements
 

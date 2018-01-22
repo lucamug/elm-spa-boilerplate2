@@ -10,20 +10,13 @@ module Parts.Color
         )
 
 import Color
+import Color.Convert
 import Element
 import Element.Background
 import Introspection
 
 
-example : Color.Color -> Element.Element msg
-example type_ =
-    Element.el
-        [ Element.Background.color type_
-
-        -- Here I can convert the color to string
-        ]
-    <|
-        Element.text " _ "
+-- INTROSPECTION
 
 
 introspection : Introspection.Introspection msg Color.Color
@@ -49,6 +42,22 @@ types =
     ]
 
 
+example : Color.Color -> Element.Element msg
+example type_ =
+    Element.el
+        [ Element.Background.color type_
+        , Element.width <| Element.px 100
+        , Element.height <| Element.px 100
+        ]
+    <|
+        Element.text <|
+            Color.Convert.colorToHex type_
+
+
+
+-- TYPES
+
+
 elmOrange : Color.Color
 elmOrange =
     Color.rgb 0xF0 0xAD 0x00
@@ -61,7 +70,7 @@ lightOrange =
 
 fontColor : Color.Color
 fontColor =
-    Color.rgb 0x44 0x44 0x44
+    Color.rgb 0x00 0x00 0x00
 
 
 black : Color.Color

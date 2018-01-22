@@ -1,4 +1,9 @@
-module Introspection exposing (Introspection, view)
+module Introspection
+    exposing
+        ( Introspection
+        , Introspection2
+        , view
+        )
 
 import Element
 import Element.Hack
@@ -13,6 +18,17 @@ type alias Introspection msg a =
     , types : List ( a, String )
     , example : a -> Element.Element msg
     , usageResult : Element.Element msg
+    }
+
+
+type alias Introspection2 msg msg1 a =
+    { description : String
+    , example : a -> a
+    , name : String
+    , signature : String
+    , types : List ( Element.Element msg, String )
+    , usage : String
+    , usageResult : Element.Element msg1
     }
 
 

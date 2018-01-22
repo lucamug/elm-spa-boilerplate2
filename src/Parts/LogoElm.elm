@@ -1,24 +1,25 @@
 module Parts.LogoElm
     exposing
-        ( Color(..)
-        , Type(..)
-        , component
+        ( black
+        , blue
+        , colorful
+        , green
         , introspection
+        , lightBlue
+        , orange
+        , white
         )
 
 -- import Introspection
 
+import Color
+import Color.Convert
 import Element
 import Svg
 import Svg.Attributes
 
 
--- Original SVG: https://github.com/elm-lang/svg/blob/master/examples/Logo.elm
-
-
-example : Element.Element msg -> Element.Element msg
-example type_ =
-    type_
+-- INTROSPECTION
 
 
 introspection :
@@ -41,6 +42,11 @@ introspection =
     }
 
 
+example : a -> a
+example type_ =
+    type_
+
+
 types : List ( Element.Element msg, String )
 types =
     [ ( orange 64, "orange" )
@@ -51,6 +57,10 @@ types =
     , ( black 64, "black" )
     , ( colorful 64, "colorful" )
     ]
+
+
+
+-- TYPES
 
 
 orange : Int -> Element.Element msg
@@ -88,6 +98,10 @@ colorful size =
     component size Colorful
 
 
+
+-- TYPES
+
+
 type Type
     = Color Color
     | Colorful
@@ -106,35 +120,39 @@ type Color
     | Black
 
 
+
+-- INTERNAL
+
+
 ratio : Float
 ratio =
     -- Width / Height
     1
 
 
-cssRgb : Color -> String
+cssRgb : Color -> Color.Color
 cssRgb color =
     case color of
         Orange ->
-            "#f0ad00"
+            Color.rgb 0xF0 0xAD 0x00
 
         Green ->
-            "#7fd13b"
+            Color.rgb 0x7F 0xD1 0x3B
 
         LightBlue ->
-            "#60b5cc"
+            Color.rgb 0x60 0xB5 0xCC
 
         Blue ->
-            "#5a6378"
+            Color.rgb 0x5A 0x63 0x78
 
         White ->
-            "#fff"
+            Color.rgb 0xFF 0xFF 0xFF
 
         Black ->
-            "#000"
+            Color.rgb 0x00 0x00 0x00
 
 
-component : Int -> Type -> Element.Element msg
+component : Size -> Type -> Element.Element msg
 component height type_ =
     let
         f =
@@ -169,9 +187,9 @@ component height type_ =
             , Svg.Attributes.height <| toString height
             , Svg.Attributes.width <| toString <| floor <| toFloat height * ratio
             ]
-            [ p [ f c.c1, d "M162 153l70-70H92zm94 94l67 67V179z" ] []
-            , p [ f c.c2, d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
-            , p [ f c.c3, d "M323 144V0H180zm-161 27L9 323h305z" ] []
-            , p [ f c.c4, d "M153 162L0 9v305z" ] []
+            [ p [ f (Color.Convert.colorToHex c.c1), d "M162 153l70-70H92zm94 94l67 67V179z" ] []
+            , p [ f (Color.Convert.colorToHex c.c2), d "M9 0l70 70h153L162 0zm238 85l77 76-77 77-76-77z" ] []
+            , p [ f (Color.Convert.colorToHex c.c3), d "M323 144V0H180zm-161 27L9 323h305z" ] []
+            , p [ f (Color.Convert.colorToHex c.c4), d "M153 162L0 9v305z" ] []
             ]
         )

@@ -20,6 +20,7 @@ import Introspection
 import Json.Decode as Decode
 import Navigation
 import Pages.Page1
+import Parts.Button
 import Parts.Color
 import Parts.LogoElm
 import UrlParser exposing ((</>))
@@ -34,6 +35,7 @@ routes =
     [ Top
     , Styleguide
     , Sitemap
+    , Debug
     , Page1
     , Page2
     , Page2_1
@@ -42,11 +44,12 @@ routes =
 
 type Route
     = Top
+    | Styleguide
+    | Sitemap
+    | Debug
     | Page1
     | Page2
     | Page2_1
-    | Styleguide
-    | Sitemap
     | NotFound
 
 
@@ -76,6 +79,12 @@ routeData route =
             { name = "Sitemap"
             , path = [ "sitemap" ]
             , view = viewSitemap
+            }
+
+        Debug ->
+            { name = "Debug"
+            , path = [ "debug" ]
+            , view = viewDebug
             }
 
         Page1 ->
@@ -212,6 +221,21 @@ type alias Model =
     , bannerSrc : String
     , device : Element.Hack.Device
     }
+
+
+modelIntrospection : Model -> List ( String, String )
+modelIntrospection model =
+    [ ( toString model.route, "route" )
+    , ( toString model.history, "history" )
+    , ( toString model.apiData, "apiData" )
+    , ( toString model.location, "location" )
+    , ( toString model.title, "title" )
+    , ( toString model.localStorage, "localStorage" )
+    , ( toString model.packVersion, "packVersion" )
+    , ( toString model.packElmVersion, "packElmVersion" )
+    , ( toString model.bannerSrc, "bannerSrc" )
+    , ( toString model.device, "device" )
+    ]
 
 
 type ApiData
@@ -353,8 +377,13 @@ viewLinkMenu model route =
             routePathJoined route
 
         common =
-            [ Element.padding 10
-            ]
+            if model.device.width < menuBreakPoint then
+                [ Element.padding 10
+                , Element.width Element.fill
+                ]
+            else
+                [ Element.padding 10
+                ]
     in
     if model.route == route then
         Element.el
@@ -379,14 +408,13 @@ viewMenu : Model -> Element.Element Msg
 viewMenu model =
     let
         element =
-            if model.device.width < 620 then
+            if model.device.width < menuBreakPoint then
                 Element.column
             else
                 Element.row
     in
     element
-        [ Element.Hack.style [ ( "flex-wrap", "wrap" ) ]
-        , Element.Background.color Parts.Color.lightOrange
+        [ Element.Background.color Parts.Color.lightOrange
         ]
         (List.map
             (\route -> viewLinkMenu model route)
@@ -400,7 +428,12 @@ viewTopPart model =
         [ Element.Background.fittedImage model.bannerSrc
         , Element.Font.color Parts.Color.lightOrange
         ]
-        [ Element.Hack.h1 [ Html.Attributes.style [ ( "text-shadow", "1px 0 1px black" ) ] ]
+        [ Element.Hack.h1
+            [ Html.Attributes.style
+                [ ( "text-shadow", "1px 0 1px black" )
+                , ( "text-align", "center" )
+                ]
+            ]
             [ Html.text "Elm Spa Boilerplate" ]
         ]
 
@@ -413,11 +446,16 @@ viewMiddelPart model =
         ]
 
 
+menuBreakPoint : Int
+menuBreakPoint =
+    670
+
+
 viewFooter : Model -> Element.Element msg
 viewFooter model =
     let
         element =
-            if model.device.width < 620 then
+            if model.device.width < menuBreakPoint then
                 Element.column
             else
                 Element.row
@@ -495,6 +533,21 @@ onLinkClickSE url =
 -}
 
 
+viewDebug : Model -> Element.Element msg
+viewDebug model =
+    Element.paragraph []
+        (List.map
+            (\( item, name ) ->
+                Element.paragraph []
+                    [ Element.Hack.h4 [] [ Html.text name ]
+                    , Element.text item
+                    ]
+            )
+         <|
+            modelIntrospection model
+        )
+
+
 viewTop : Model -> Element.Element Msg
 viewTop model =
     Element.column []
@@ -506,7 +559,6 @@ viewTop model =
                 , label = Element.text "https://medium.com/@l.mugnaini/single-page-application-boilerplate-for-elm-160bb5f3eec2"
                 }
             ]
-        , Element.paragraph [] [ Element.text <| toString model ]
         , Element.paragraph []
             [ Element.text "The code is at "
             , Element.link [] { url = "https://github.com/lucamug/elm-spa-boilerplate2", label = Element.text "https://github.com/lucamug/elm-spa-boilerplate2" }
@@ -552,10 +604,11 @@ viewStyleguide : Model -> Element.Element Msg
 viewStyleguide model =
     Element.column []
         [ Element.text "This is a Living Style Guide automatically generated from the code."
-        , Introspection.view Parts.Color.introspection
 
-        --, Introspection.view Parts.Button.introspection
-        , Introspection.view Parts.LogoElm.introspection
+        --, Introspection.view Parts.Color.introspection
+        , Introspection.view Parts.Button.introspection
+
+        --, Introspection.view Parts.LogoElm.introspection
         ]
 
 
@@ -657,11 +710,7 @@ forkMe : Element.Element msg
 forkMe =
     Element.link []
         { url = "https://github.com/lucamug/elm-spa-boilerplate2"
-        , label =
-            Element.image []
-                { src = "https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67"
-                , description = "Fork me on GitHub"
-                }
+        , label = Element.text "Fork me on GitHub"
         }
 
 
